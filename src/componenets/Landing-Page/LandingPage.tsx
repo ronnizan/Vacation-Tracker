@@ -1,0 +1,53 @@
+
+import React, { Component } from 'react';
+import './LandingPage.css'
+import { Link, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { AppState } from '../../redux/store/store';
+import { Auth } from '../../redux/types/auth/auth-type';
+
+type Props = LinkStateProps;
+
+
+class LandingPage extends Component<Props> {
+    render() {
+        if (this.props.auth.isAuthenticated) {
+            return <Redirect to="/vacations"></Redirect>
+        }
+        return (
+            <header>
+                <div className="overlay" />
+                <video playsInline={true} autoPlay={true} muted={true} loop={true}>
+                    <source src="https://storage.googleapis.com/coverr-main/mp4/Mt_Baker.mp4" type="video/mp4" />
+                </video>
+                <div className="container h-100">
+                    <div className="d-flex h-100 text-center align-items-center">
+                        <div className="w-100 text-white">
+                            <h1 className="display-3">Vacation Tracker</h1>
+                            <div className="links-container">
+                                <button  className="btn btn-lg btn-primary text-uppercase landing-buttons" type="submit"><Link className="landing-links" to="/login">Sign In</Link></button>
+                                <br /> <br />
+                                <button className="btn btn-lg btn-primary text-uppercase landing-buttons" type="submit"><Link className="landing-links" to="/register">Register</Link></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+        );
+    }
+}
+interface LinkStateProps {
+    auth: Auth
+}
+
+const mapStateToProps = (
+    state: AppState,
+): LinkStateProps => ({
+    auth: state.auth
+});
+export default connect(mapStateToProps)(LandingPage);
+
+
+
+
