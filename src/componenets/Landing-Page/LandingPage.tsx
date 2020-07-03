@@ -11,8 +11,11 @@ type Props = LinkStateProps;
 
 class LandingPage extends Component<Props> {
     render() {
-        if (this.props.auth.isAuthenticated) {
+        if (this.props.auth.isAuthenticated && this.props.auth.user.isAdmin !== 1) {
             return <Redirect to="/vacations"></Redirect>
+        }
+        if (this.props.auth.isAuthenticated && this.props.auth.user.isAdmin === 1) {
+            return <Redirect to="/admin-vacations"></Redirect>
         }
         return (
             <header>

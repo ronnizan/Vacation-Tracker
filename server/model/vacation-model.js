@@ -28,7 +28,7 @@ class Vacation {
       imageFileName: Joi.string().required().min(0).max(200),
       startVacationDate: Joi.date().required(),
       endVacationDate: Joi.date().required(),
-      price: Joi.number().required(),
+      price: Joi.number().required().max(10000)
     };
     const result = Joi.validate(this, schema, { abortEarly: false }); // { abortEarly: false } = Return all errors
     return result.error ? result.error.details.map((err) => err.message) : null; // null = no errors

@@ -37,7 +37,12 @@ router.post("/register", async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(password, salt);
-    await userLogic.registerUser(user);
+    const didCreateUser =  await userLogic.registerUser(user);
+    if (!didCreateUser) {
+      return res
+      .status(400)
+      .json({ errors: [{ msg: "failed to Register User" }] });
+    }
 
     const payload = {
       user: {
@@ -45,7 +50,7 @@ router.post("/register", async (req, res) => {
         isAdmin: user.isAdmin,
       },
     };
-    jwt.sign(payload, config.jwtSecret, { expiresIn: 36000 }, (err, token) => {
+    jwt.sign(payload, config.jwtSecret, { expiresIn: "5d" }, (err, token) => {
       if (err) {
         throw new Error(err);
       }
@@ -86,7 +91,7 @@ router.post("/login", async (req, res) => {
         isAdmin: user.isAdmin,
       },
     };
-    jwt.sign(payload, config.jwtSecret, { expiresIn: 36000 }, (err, token) => {
+    jwt.sign(payload, config.jwtSecret, { expiresIn: "5d" }, (err, token) => {
       if (err) {
         throw new Error(err);
       }
@@ -102,10 +107,8 @@ router.post("/login", async (req, res) => {
 router.get("/user", authMiddleware, async (req, res) => {
   try {
     const user = await userLogic.getAuthUser(req.user.userId);
-    // User.findById(req.user.id).select("-password");
     if (!user) {
-      return res.status(400).json({ errors: [{ msg: "User crenot not Found" }] });
-      // res.json("not Found");
+      return res.status(400).json({ errors: [{ msg: "User Wasn't Found" }] });
     }
     user.password = undefined;
     res.json(user);

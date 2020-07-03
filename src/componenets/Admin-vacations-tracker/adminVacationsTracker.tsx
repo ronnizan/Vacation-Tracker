@@ -10,14 +10,14 @@ import { AppActions } from '../../redux/types/auth/auth-actions-types';
 type Props = LinkDispatchProps ;
 interface TestState { }
 
-class AdminPage extends Component<Props> {
+class AdminVacationsPage extends Component<Props> {
     componentDidMount(){
         this.props.loadUser();
     }
     render() {
         return (
-            <div>
-                admin
+            <div className="container-fluid">
+                admin Tracker
             </div>
         )
     }
@@ -35,4 +35,4 @@ const mapDispatchToProps = (
 export default connect(
   null,
   mapDispatchToProps
-)(AdminPage);
+)(AdminVacationsPage);

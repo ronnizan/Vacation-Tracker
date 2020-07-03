@@ -1,7 +1,8 @@
 const express = require("express");
+const fs = require("fs");
+const uuid = require("uuid");
 const authMiddleware = require("../middleware/auth-middleware");
 const vacationLogic = require("../business-logic/vacations-logic");
-const userLogic = require("../business-logic/auth-logic");
 const Vacation = require("../model/vacation-model");
 
 const router = express.Router();
@@ -40,35 +41,49 @@ router.get("/my-vacations", authMiddleware, async (req, res) => {
     res.status(500).send("server error");
   }
 });
+
+
+
 // add Vacation
 router.post("/", authMiddleware, async (req, res) => {
   try {
     if (req.user.isAdmin === 0) {
       return res.status(403).send("Authorization error");
     }
+      const imageFile = req.files.image;
+      const receivedVacation = JSON.parse(req.body.vacation);
+      const randomName = uuid.v4();
+      const extension = imageFile.name.substr(imageFile.name.lastIndexOf('.'));
+      if (extension != ".jpg" && extension != ".png" && extension != ".gif" && extension != ".jpeg") {
+        return res.status(400).json({
+          errors: 'Cant accept this type of file...,can only accept png,gif,jpg and jpeg!'
+       });
+      }
+      // imageFile.mv('../client/src/assets/images/' + randomName + extension);
+      imageFile.mv('../client/public/assets/images/' + randomName + extension);
+      receivedVacation.imageFileName = randomName + extension;
 
-    const vacation = new Vacation(
+      const vacation = new Vacation(
       undefined,
-      req.body.description,
-      req.body.destination,
-      req.body.imageFileName,
-      req.body.startVacationDate,
-      req.body.endVacationDate,
-      req.body.price
+      receivedVacation.description,
+      receivedVacation.destination,
+      receivedVacation.imageFileName,
+      receivedVacation.startVacationDate,
+      receivedVacation.endVacationDate,
+      receivedVacation.price
     );
-    const errors = vacation.validatePost();
-    if (errors) {
+     const errors = vacation.validatePost();
+     if (errors) {
       return res.status(400).json({ errors: errors });
-    }
+     }
 
     const addedVacation = await vacationLogic.addVacation(vacation);
 
     if (!addedVacation) {
       return res.status(400).json({ msg: "failed to add vacation!" });
     }
-    res.json(addedVacation);
+    res.status(201).json({ msg: "succuss to add vacation!" });
   } catch (error) {
-    console.log(error);
     res.status(500).send("server error");
   }
 });
@@ -112,10 +127,32 @@ router.delete("/delete/:vacationId", authMiddleware, async (req, res) => {
     if (req.user.isAdmin === 0) {
       return res.status(403).send("Authorization error");
     }
+    if (!req.params.vacationId) {
+      return res.status(400).send("vacationId needed");
+    }
+
     const vacationId = +req.params.vacationId;
-    await vacationLogic.deleteVacation(vacationId);
-    res.sendStatus(204);
+    const vacationImageName = await vacationLogic.getVacationImageName(vacationId);
+    if (!vacationImageName) {
+      return res.json({msg:"failed to delete image"})
+    }
+    const isVacationDeleted =  await vacationLogic.deleteVacation(vacationId);
+
+    if (!isVacationDeleted) {
+      return res.json({msg:"failed to delete vacation"})
+    }
+
+    
+    fs.unlink("../client/public/assets/images/"+ vacationImageName, (err)=>{
+      if (err) {
+        return res.json({msg:"failed to delete image"})
+      }else{
+        res.sendStatus(204);
+      } 
+    })    
+   
   } catch (err) {
+    console.log (err)
     res.status(500).send(err.message);
   }
 });
@@ -125,6 +162,9 @@ router.delete("/delete/:vacationId", authMiddleware, async (req, res) => {
 router.get("/all-vacations-followers", authMiddleware, async (req, res) => {
   try {
     const followedVacationsIdAndNumOfFollowers = await vacationLogic.getFollowersAmountForAllVacations();
+    if (!followedVacationsIdAndNumOfFollowers) {
+      return res.json({msg:"failed to get vacations"})
+    }
     res.json(followedVacationsIdAndNumOfFollowers);
   } catch (err) {
     res.status(500).send(err.message);
@@ -132,15 +172,18 @@ router.get("/all-vacations-followers", authMiddleware, async (req, res) => {
 });
 
 // get Followers Amount For Specific Vacation
-router.get("/specific-vacation-followers", authMiddleware, async (req, res) => {
+router.get("/specific-vacation-followers/:vacationId", authMiddleware, async (req, res) => {
   try {
-    if (!req.body.vacationId) {
+    if (!req.params.vacationId) {
       return res.status(400).send("vacationId needed");
     }
-    const vacationId = +req.body.vacationId;
+    const vacationId = +req.params.vacationId;
     const followedVacationIdAndNumOfFollowers = await vacationLogic.getFollowersAmountForSpecificVacation(
       vacationId
     );
+    if (!followedVacationIdAndNumOfFollowers) {
+      return res.json({msg:"failed to get vacation"})
+    }
     res.json(followedVacationIdAndNumOfFollowers);
   } catch (err) {
     res.status(500).send(err.message);
@@ -173,12 +216,12 @@ router.post("/add-vacation-follower", authMiddleware, async (req, res) => {
 });
 
 // remove Follower To a Vacation,
-router.delete("/remove-vacation-follower", authMiddleware, async (req, res) => {
+router.delete("/remove-vacation-follower/:vacationId", authMiddleware, async (req, res) => {
   try {
-    if (!req.body.vacationId) {
+    if (!req.params.vacationId) {
       return res.status(400).send("vacationId needed");
     }
-    const vacationId = +req.body.vacationId;
+    const vacationId = +req.params.vacationId;
     const userId = req.user.userId;
     const responseFromDB = await vacationLogic.removeFollowerToVacation(
       vacationId,
@@ -198,45 +241,5 @@ router.delete("/remove-vacation-follower", authMiddleware, async (req, res) => {
     res.status(500).send(err.message);
   }
 });
-
-// const fs = require("fs");
-// const fileUpload = require("express-fileupload");
-// const uuid = require("uuid");
-// // server.use(express.static(__dirname)); // "/" ==> "index.html"
-
-// router.post("/upload-image", (req, response) => {
-//   if (!fs.existsSync("./uploads")) {
-//     fs.mkdirSync("./uploads");
-//   }
-
-//   if (!req.files) {
-//     response.status(400).send("No file sent");
-//     return;
-//   }
-
-//   const image = req.files.userImage;
-//   const extension = image.name.substr(image.name.lastIndexOf(".")); // e.g: ".jpg"
-
-//   if (extension != ".jpg" && extension != ".png") {
-//     response.status(400).send("Illegal file sent");
-//     return;
-//   }
-
-//   const newFileName = uuid.v4() + extension;
-//   image.mv("./uploads/" + newFileName);
-
-//   response.end();
-
-  //   <form action="/upload-image" method="post" enctype="multipart/form-data">
-
-  //   <input type="file" name="userImage"> <!-- Any File-->
-  //   <input type="file" name="userImage" accept="image/*"> <!-- Image Files -->
-  //   <input type="file" name="userImage" accept=".jpg,.png,.gif"> <!-- Specific Image Files-->
-  //   <input type="file" name="userImage" accept=".jpg"> <!-- One specific file -->
-
-  //   <button>Upload</button>
-
-  // </form>
-// });
 
 module.exports = router;

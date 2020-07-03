@@ -1,7 +1,7 @@
 
-import React, { Component } from 'react';
+import React from 'react';
 import "./Navbar.css"
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { logoutUser } from '../../redux/actions/auth-actions';
@@ -20,9 +20,9 @@ class Navbar extends React.Component<Props> {
 
     }
 
-    render() { 
+    render() {
         const { logoutUser, auth } = this.props;
-        
+
         const authLinks =
             (<ul className="navbar-nav mr-auto">
                 <li className="nav-item">
@@ -35,16 +35,16 @@ class Navbar extends React.Component<Props> {
                     </Link>
                 </li> */}
                 <li className="nav-item">
-                    <Link to="/vacations" className="nav-link">Vacations</Link>
+                    {auth.isAuthenticated && auth.user.isAdmin === 1 ? <Link to="/admin-vacations" className="nav-link">Vacations</Link> : <Link to="/vacations" className="nav-link">Vacations</Link>}
                 </li>
                 {
                     auth.isAuthenticated && auth.user.isAdmin === 1 && (
                         <>
                             <li className="nav-item">
-                                <Link to="/vacations" className="nav-link">Add Vacation</Link>
+                                <Link to="/add-vacation" className="nav-link">Add Vacation</Link>
                             </li>
                             <li className="nav-item">
-                                <Link to="/vacations" className="nav-link">Vacation Tracker</Link>
+                                <Link to="/admin-vacations-tracker" className="nav-link">Vacation Tracker</Link>
                             </li>
                         </>
                     )
@@ -52,8 +52,8 @@ class Navbar extends React.Component<Props> {
                 <li className="nav-item">
                     <button onClick={() => {
                         logoutUser();
-                        
-                        
+
+
                     }} className="button-navbar nav-link ">Logout</button>
                 </li>
             </ul>
@@ -92,7 +92,7 @@ class Navbar extends React.Component<Props> {
                         </div>
                     </div>
                 </nav>
-                <br />
+
             </div>
 
 

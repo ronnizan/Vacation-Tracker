@@ -6,6 +6,7 @@ export class VacationModel {
         public imageFileName?: string,
         public startVacationDate?: string,
         public endVacationDate?: string,
-        public price?: number
+        public price?: number,
+        public totalFollowers ?: number
     ) { }
 }

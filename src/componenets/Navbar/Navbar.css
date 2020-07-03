@@ -11,5 +11,7 @@
     cursor: default !important;
 }
 .navbar{
-    opacity: 80%
+    opacity: 100%;
+    font-size: large;
+    color: white !important;
 }

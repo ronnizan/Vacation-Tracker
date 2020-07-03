@@ -1,15 +1,20 @@
 const dal = require("../dal/dal");
 
 async function registerUser(user) {
-  const sql = `insert into users values(default,
-    '${user.firstName}',
-    '${user.lastName}',
-    '${user.username}',
-    '${user.password}',
-    0)`;
-  const info = await dal.executeAsync(sql);
-  user.userId = info.insertId;
-  return user;
+  try {
+    const sql = `insert into users values(default,
+      '${user.firstName}',
+      '${user.lastName}',
+      '${user.username}',
+      '${user.password}',
+      0)`;
+    const info = await dal.executeAsync(sql);
+    user.userId = info.insertId;
+    return user;
+  } catch (error) {
+    return false;
+  }
+
 }
 async function getUser(username) {
   const sql = `select * from users where userName='${username}'`;

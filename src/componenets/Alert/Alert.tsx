@@ -1,4 +1,4 @@
-import React, { FunctionComponent, FC } from "react";
+import React from "react";
 import "./Alert.css"
 import { connect } from "react-redux";
 import { Alert as AlertType } from '../../redux/types/alert/alert-type';
@@ -13,14 +13,14 @@ const Alert: React.FC<Props> = (props: Props) => {
 
   const alertToDisplay = alerts !== null &&
     alerts.length > 0 && alerts.map((alert) => {
-      const { id, timeout, alertType, msg } = alert;
+      const { id, alertType, msg } = alert;
       const notify = () => {
         if (alertType === "danger") {
           const customId = "custom-id-danger";
 
           toast.error(msg, {
             position: "top-left",
-            autoClose: timeout,
+            autoClose: 5000,
             hideProgressBar: true,
             closeOnClick: true,
             pauseOnHover: true,
@@ -35,7 +35,7 @@ const Alert: React.FC<Props> = (props: Props) => {
 
           toast.success(msg, {
             position: "top-left",
-            autoClose: timeout,
+            autoClose: 5000,
             hideProgressBar: true,
             closeOnClick: true,
             pauseOnHover: true,
@@ -49,9 +49,15 @@ const Alert: React.FC<Props> = (props: Props) => {
 
       }
       notify()
+      // const clearWaitingQueue = () => {
+      //   // Easy, right 😎
+      //   toast.clearWaitingQueue();
+      // }
       return (
 
         <ToastContainer
+          limit={1}
+          key={id}
           position="top-center"
           autoClose={5000}
           hideProgressBar={false}
@@ -61,6 +67,7 @@ const Alert: React.FC<Props> = (props: Props) => {
           pauseOnFocusLoss
           draggable
           pauseOnHover
+
         />
 
       );

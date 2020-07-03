@@ -37,12 +37,12 @@ class RegisterPage extends Component<Props, RegisterPageState> {
     };
 
 
-    private onSubmit =  (e: FormEvent) => {
+    private onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        const { username, password, firstName, lastName,password2 } = this.state
+        const { username, password, firstName, lastName, password2 } = this.state
         // console.log(this.state)
         if (password !== password2) {
-          return this.props.popUpAlert({ msg: 'passwords do not match', alertType: 'danger', timeout: 5000 });
+            return this.props.popUpAlert({ msg: 'passwords do not match', alertType: 'danger', timeout: 5000 });
         } else {
             this.props.registerUser({ username, password, firstName, lastName })
         }
@@ -54,82 +54,83 @@ class RegisterPage extends Component<Props, RegisterPageState> {
             return <Redirect to="/vacations"></Redirect>
         }
         return (
-
-            <div className="row">
-                <div className="col-sm-9 col-md-7 col-lg-4 mx-auto">
-                    <div className="card card-signin my-5">
-                        <div className="card-body">
-                            <h5 className="card-title text-center">Register</h5>
-                            <form className="form-signin" onSubmit={(e) => this.onSubmit(e)}>
-                                <div className="form-label-group">
-                                    <input type="text"
-                                        id="inputFirstName"
-                                        className="form-control"
-                                        placeholder="First Name"
-                                        value={this.state.firstName}
-                                        onChange={(e) => this.onChange(e)}
-                                        name='firstName'
-                                        required
-                                        autoComplete="off"
-                                        autoFocus />
-                                    <label htmlFor="inputFirstName">First Name </label>
-                                </div>
-                                <div className="form-label-group">
-                                    <input type="text"
-                                        id="inputLastName"
-                                        className="form-control"
-                                        placeholder="Last Name"
-                                        value={this.state.lastName}
-                                        onChange={(e) => this.onChange(e)}
-                                        name='lastName'
-                                        required
-                                        autoComplete="off"
-                                        autoFocus />
-                                    <label htmlFor="inputLastName">Last Name </label>
-                                </div>
-                                <div className="form-label-group">
-                                    <input type="text"
-                                        id="inputUsername"
-                                        className="form-control"
-                                        placeholder="Username"
-                                        value={this.state.username}
-                                        onChange={(e) => this.onChange(e)}
-                                        name='username'
-                                        required
-                                        autoComplete="off"
-                                        autoFocus />
-                                    <label htmlFor="inputUsername">Username </label>
-                                </div>
-                                <div className="form-label-group">
-                                    <input type="password"
-                                        id="inputPassword"
-                                        className="form-control"
-                                        placeholder="Password"
-                                        value={this.state.password}
-                                        onChange={(e) => this.onChange(e)}
-                                        name='password'
-                                        minLength={6}
-                                        autoComplete="off"
-                                        required />
-                                    <label htmlFor="inputPassword">Password</label>
-                                </div>
-                                <div className="form-label-group">
-                                    <input type="password"
-                                        id="inputConfirmPassword"
-                                        className="form-control"
-                                        placeholder="Password"
-                                        value={this.state.password2}
-                                        onChange={(e) => this.onChange(e)}
-                                        name='password2'
-                                        minLength={6}
-                                        autoComplete="off"
-                                        required />
-                                    <label htmlFor="inputConfirmPassword">Confirm password</label>
-                                </div>
-                                <button className="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Register</button>
-                                <button className="btn btn-lg btn-google btn-block text-uppercase" type="submit"><i className="fab fa-google mr-2" /> Register with Google</button>
-                                <button className="btn btn-lg btn-facebook btn-block text-uppercase" type="submit"><i className="fab fa-facebook-f mr-2" /> Register with Facebook</button>
-                            </form>
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-sm-9 col-md-7 col-lg-4 mx-auto">
+                        <div className="card card-signin my-5">
+                            <div className="card-body">
+                                <h5 className="card-title text-center">Register</h5>
+                                <form className="form-signin" onSubmit={(e) => this.onSubmit(e)}>
+                                    <div className="form-label-group">
+                                        <input type="text"
+                                            id="inputFirstName"
+                                            className="form-control"
+                                            placeholder="First Name"
+                                            value={this.state.firstName}
+                                            onChange={(e) => this.onChange(e)}
+                                            name='firstName'
+                                            required
+                                            autoComplete="off"
+                                            autoFocus />
+                                        <label htmlFor="inputFirstName">First Name </label>
+                                    </div>
+                                    <div className="form-label-group">
+                                        <input type="text"
+                                            id="inputLastName"
+                                            className="form-control"
+                                            placeholder="Last Name"
+                                            value={this.state.lastName}
+                                            onChange={(e) => this.onChange(e)}
+                                            name='lastName'
+                                            required
+                                            autoComplete="off"
+                                            autoFocus />
+                                        <label htmlFor="inputLastName">Last Name </label>
+                                    </div>
+                                    <div className="form-label-group">
+                                        <input type="text"
+                                            id="inputUsername"
+                                            className="form-control"
+                                            placeholder="Username"
+                                            value={this.state.username}
+                                            onChange={(e) => this.onChange(e)}
+                                            name='username'
+                                            required
+                                            autoComplete="off"
+                                            autoFocus />
+                                        <label htmlFor="inputUsername">Username </label>
+                                    </div>
+                                    <div className="form-label-group">
+                                        <input type="password"
+                                            id="inputPassword"
+                                            className="form-control"
+                                            placeholder="Password"
+                                            value={this.state.password}
+                                            onChange={(e) => this.onChange(e)}
+                                            name='password'
+                                            minLength={6}
+                                            autoComplete="off"
+                                            required />
+                                        <label htmlFor="inputPassword">Password</label>
+                                    </div>
+                                    <div className="form-label-group">
+                                        <input type="password"
+                                            id="inputConfirmPassword"
+                                            className="form-control"
+                                            placeholder="Password"
+                                            value={this.state.password2}
+                                            onChange={(e) => this.onChange(e)}
+                                            name='password2'
+                                            minLength={6}
+                                            autoComplete="off"
+                                            required />
+                                        <label htmlFor="inputConfirmPassword">Confirm password</label>
+                                    </div>
+                                    <button className="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Register</button>
+                                    <button className="btn btn-lg btn-google btn-block text-uppercase" type="submit"><i className="fab fa-google mr-2" /> Register with Google</button>
+                                    <button className="btn btn-lg btn-facebook btn-block text-uppercase" type="submit"><i className="fab fa-facebook-f mr-2" /> Register with Facebook</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
