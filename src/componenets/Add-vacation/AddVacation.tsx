@@ -11,11 +11,8 @@ import setAuthToken from '../../utills/setAuthToken';
 import { popUpAlert } from '../../redux/actions/alert-actions';
 import { Alert } from '../../redux/types/alert/alert-type';
 
-
-
 type Props = LinkDispatchProps;
 interface AddVacationState {
-
     image: any
     destination: string;
     description: string;
@@ -38,7 +35,6 @@ class AddVacation extends Component<Props, AddVacationState> {
             startDate: "",
             endDate: "",
             imageFileName: ""
-
         }
 
     }
@@ -68,9 +64,9 @@ class AddVacation extends Component<Props, AddVacationState> {
         this.setState({
             image: event.target.files[0]
         });
-        // if (event.target.files[0]) {
-        //     this.props.popUpAlert({ alertType: "success", msg: "successfully Uploaded Image ", timeout: 5000 });
-        // }
+        if (event.target.files[0]) {
+            this.props.popUpAlert({ alertType: "success", msg: "successfully Uploaded Image", timeout: 5000 });
+        }
 
     };
 
@@ -110,6 +106,7 @@ class AddVacation extends Component<Props, AddVacationState> {
     };
 
 
+
     render() {
 
 
@@ -121,11 +118,9 @@ class AddVacation extends Component<Props, AddVacationState> {
                         <div className="card card-signin my-5">
                             <div className="card-body">
                                 <h5 className="card-title text-center">Add Vacation</h5>
-                                <form onSubmit={(event)=> this.onSubmit(event)} className="form-signin">
+                                <form onSubmit={(event) => this.onSubmit(event)} className="form-signin">
                                     <div className="form-label-group">
                                         <input type="text"
-                                            minLength={5}
-                                            maxLength={2000}
                                             id="inputDestination"
                                             className="form-control"
                                             placeholder="Destination"
@@ -145,7 +140,6 @@ class AddVacation extends Component<Props, AddVacationState> {
                                             placeholder="Description"
                                             value={this.state.description}
                                             onChange={(e) => this.onChange(e)}
-                                            minLength={5}
                                             maxLength={1000}
                                             name='description'
                                             required
@@ -158,7 +152,6 @@ class AddVacation extends Component<Props, AddVacationState> {
                                             id="inputPrice"
                                             className="form-control"
                                             placeholder="Price"
-                                            min={100}
                                             max={10000}
                                             value={this.state.price}
                                             onChange={(e) => this.onChange(e)}
@@ -181,14 +174,13 @@ class AddVacation extends Component<Props, AddVacationState> {
                                         min={this.state.startDate}
                                         required type="date" name="startTime" id="startTime" />
 
-                                    <input onChange={this.onChangeImage}  type="file" id="fileUploadInput" name="vacationImage" accept=".jpg,.png,.gif,.jpeg" />
+                                    <input onChange={this.onChangeImage} type="file" id="fileUploadInput" name="vacationImage" accept=".jpg,.png,.gif,.jpeg" />
                                     <label className="image-upload-label" htmlFor="fileUploadInput"><i className="fas fa-file-upload"></i> &nbsp; Choose Image</label>
                                     <span>{this.state.image ? this.state.image.name : ""}</span>
                                     <br /><br />
-                                    
+
                                     <button className="btn btn-lg btn-primary btn-block text-uppercase" >Add Vacation</button>
                                 </form>
- 
                             </div>
                         </div>
                     </div>
@@ -202,7 +194,7 @@ class AddVacation extends Component<Props, AddVacationState> {
 interface LinkDispatchProps {
     popUpAlert?: (alert: Alert) => void;
     loadUser?: () => void;
-    history?:  any 
+    history?: any
 }
 const mapDispatchToProps = (
     dispatch: ThunkDispatch<any, any, AppActions>
@@ -214,4 +206,3 @@ export default connect(
     null,
     mapDispatchToProps
 )(AddVacation);
-// hi! i have a problem that i really strugliing with.., i have an add vacation component that im sendnig to my server and for some reason the page refreshes (with prevent default on the submit handler),also on my other vacations page when i delete a vacation by a click the page refreshes also.., i dont understand why..

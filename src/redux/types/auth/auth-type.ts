@@ -4,4 +4,5 @@ export interface Auth {
     isAuthenticated: boolean | null;
     loading: boolean;
     user: UserModel
+    refreshPage:boolean
 }

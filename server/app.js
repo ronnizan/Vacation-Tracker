@@ -1,8 +1,6 @@
 global.config = require(process.env.NODE_ENV === "production"
   ? "./config-prod"
   : "./config-dev");
-// const fileUpload = require('express-fileupload');
-// const fs = require('fs');
 // const socketIO = require('socket.io');
 const express = require("express");
 const cors = require("cors");
@@ -12,7 +10,6 @@ const path = require("path");
 const fs = require("fs");
 const fileUpload = require("express-fileupload");
 
-// server.use(fileUpload());
 
 
 const app = express();
@@ -26,7 +23,6 @@ app.use(express.json());
 if (!fs.existsSync('../client/public/assets/images/')) {
   fs.mkdirSync('../client/public/assets/images/');
 }
-// server.use(express.static(__dirname)); // "/" ==> "index.html"
 
 // server.use(express.static(path.join(__dirname, "./_front-end")));
 app.use(express.static(__dirname)); // "/" ==> "index.html"

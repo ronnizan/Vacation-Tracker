@@ -22,12 +22,14 @@ export const popUpAlert = (alertData: {
   alertType?: string;
   timeout?: number;
   id?: string;
+  
 }) => {
   return (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
     const {
       msg,
       alertType,
       timeout,
+     
     } = alertData;
     const id = uuid();
     const alert = { msg, alertType, timeout, id };
@@ -38,6 +40,6 @@ export const popUpAlert = (alertData: {
     );
     setTimeout(() => {
       dispatch(removeAlert(id))
-    }, timeout);
+    }, 5000);
   };
 };

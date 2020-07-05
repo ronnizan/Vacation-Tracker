@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import "./AdminVacationPage.css"
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { loadUser } from '../../redux/actions/auth-actions';
+import { loadUser, stopRefreshPage } from '../../redux/actions/auth-actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { AppActions } from '../../redux/types/auth/auth-actions-types';
 import { VacationModel } from '../../models/vacation-model';
@@ -13,11 +13,13 @@ import { popUpAlert } from '../../redux/actions/alert-actions';
 import { Alert } from '../../redux/types/alert/alert-type';
 import { Auth } from '../../redux/types/auth/auth-type';
 import { AppState } from '../../redux/store/store';
+import Modal from '../Modal/Modal';
 
 type Props = LinkDispatchProps & LinkStateProps;
 interface AdminVacationPageState {
   allVacations: VacationModel[];
-
+  isModalOpen: boolean;
+  vacationIdToEdit: number
 }
 
 class AdminVacationPage extends Component<Props, AdminVacationPageState> {
@@ -26,19 +28,22 @@ class AdminVacationPage extends Component<Props, AdminVacationPageState> {
     super(props);
     this.state = {
       allVacations: [],
+      isModalOpen: false,
+      vacationIdToEdit: 0
     }
 
   }
 
   async componentDidMount() {
     try {
-      // this.props.loadUser();
+
       if (localStorage.token) {
         setAuthToken(localStorage.token);
       }
       const res = await axios.get<VacationModel[]>(Config.serverUrl + "/api/vacations");
       const allVacations = res.data;
       this.setState({ allVacations })
+      this.setState({ vacationIdToEdit: allVacations[0].vacationId });
 
     } catch (error) {
       console.log(error)
@@ -46,6 +51,15 @@ class AdminVacationPage extends Component<Props, AdminVacationPageState> {
   }
 
 
+
+  componentDidUpdate(prevProps: { auth: { refreshPage: boolean; }; }, prevState: any) {
+    if (prevProps.auth.refreshPage !== this.props.auth.refreshPage) {
+      if (this.props.auth.refreshPage) {
+        this.componentDidMount();
+        this.props.stopRefreshPage();
+      }
+    }
+  }
 
 
   private async deleteVacation(vacationId: number) {
@@ -72,21 +86,21 @@ class AdminVacationPage extends Component<Props, AdminVacationPageState> {
       this.state.allVacations.length > 0 &&
       <div className="container">
         <br /><br />
-        {/* <div><img src={"/client/src/assets/images/003ecc8c-17e7-4f90-9ab4-3b5300b09f59.jpg"}  alt=""/> sasds</div> */}
         <div className="row">
           {
-             
+
             this.state.allVacations.map((vacation, index) => {
               return (
                 <div key={vacation.vacationId} className="col-sm-12 col-md-6 col-lg-4">
                   <div className="card">
                     <div onClick={() => {
-
+                      this.setState({ vacationIdToEdit: vacation.vacationId, isModalOpen: true })
+                      // this.setState({ isModalOpen: true });
                     }} title="Edit Vacation" className="edit-Wrapper"><i className="far fa-edit"></i></div>
                     <div onClick={() => {
                       this.deleteVacation(vacation.vacationId)
                     }} title="Delete Vacation" className="delete-Wrapper"><i className="fas fa-trash-alt"></i></div>
-                    <img className="card-img-top" src={window.location.origin + "/assets/images/"+vacation.imageFileName}  alt=""/>
+                    <img className="card-img-top" src={window.location.origin + "/assets/images/" + vacation.imageFileName} alt="" />
                     <div className="card-body">
                       <h5 className="card-title"><strong>Destination:</strong> {vacation.destination}</h5>
                       <p className="card-text"><strong>Description:</strong>  {vacation.description}</p>
@@ -96,7 +110,6 @@ class AdminVacationPage extends Component<Props, AdminVacationPageState> {
                       <p className="card-text"><strong>Price: </strong> ${vacation.price}</p>
                       <div className="followers-Wrapper"><span title="Total Followers">{vacation.totalFollowers}</span></div>
                     </div>
-
                   </div>
                 </div>
 
@@ -105,6 +118,10 @@ class AdminVacationPage extends Component<Props, AdminVacationPageState> {
           }
 
         </div>
+        {/* <button onClick={() => { this.setState({ isModalOpen: true }) }}>asd</button> */}
+        {this.state.vacationIdToEdit !== 0 && this.state.isModalOpen &&
+          <Modal showModal={this.state.isModalOpen} closeModal={() => { this.setState({ isModalOpen: false }) }} vacationId={this.state.vacationIdToEdit}  ></Modal>
+        }
 
       </div>
     )
@@ -113,23 +130,27 @@ class AdminVacationPage extends Component<Props, AdminVacationPageState> {
 
 
 interface LinkStateProps {
-  auth: Auth
+  auth: Auth;
+
 }
 
 const mapStateToProps = (
   state: AppState,
 ): LinkStateProps => ({
-  auth: state.auth
+  auth: state.auth,
 });
 interface LinkDispatchProps {
   popUpAlert?: (alert: Alert) => void;
   loadUser?: () => void;
+  stopRefreshPage?: () => void
+
 }
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<any, any, AppActions>
 ): LinkDispatchProps => ({
   popUpAlert: bindActionCreators(popUpAlert, dispatch),
-  loadUser: bindActionCreators(loadUser, dispatch)
+  loadUser: bindActionCreators(loadUser, dispatch),
+  stopRefreshPage: bindActionCreators(stopRefreshPage, dispatch)
 });
 export default connect(
   mapStateToProps,

@@ -46,6 +46,8 @@ class Vacation {
       price: Joi.number()
     };
     const result = Joi.validate(this, schema, { abortEarly: false });
+    // return result
+    // return result.error ? result.error.details[0] : null;
     return result.error ? result.error.details.map((err) => err.message) : null;
   }
 }

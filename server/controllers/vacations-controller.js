@@ -14,10 +14,29 @@ router.get("/", authMiddleware, async (req, res) => {
     const vacations = await vacationLogic.getAllVacations();
 
     if (!vacations) {
-      return res.status(400).json({ msg: "there is no vacations!" });
+      return res.status(400).json({ msg: "there is no vacations! from a" });
     }
 
     res.json(vacations);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("server error");
+  }
+});
+
+//get one vacation
+router.get("/get-one-vacation/:vacationId", authMiddleware, async (req, res) => {
+  try {
+    if (req.user.isAdmin === 0) {
+      return res.status(403).send("Authorization error");
+    }
+    const vacationId = +req.params.vacationId
+    const vacationFromDB = await vacationLogic.getOneVacation(vacationId);
+    const vacation = vacationFromDB[0];
+    if (!vacation) {
+      return res.status(400).json({ msg: "there is no vacation! from ccc" });
+    }
+    res.json(vacation);
   } catch (error) {
     console.log(error);
     res.status(500).send("server error");
@@ -32,7 +51,7 @@ router.get("/my-vacations", authMiddleware, async (req, res) => {
     );
 
     if (!vacations) {
-      return res.status(400).json({ msg: "there is no vacations!" });
+      return res.status(400).json({ msg: "there is no vacations! from b"  });
     }
 
     res.json(vacations);
@@ -92,30 +111,70 @@ router.post("/", authMiddleware, async (req, res) => {
 router.patch("/update", authMiddleware, async (req, res) => {
   try {
     if (req.user.isAdmin === 0) {
-      return res.status(403).send("Authorization error");
+      return res.status(403).json({errors:"Authorization error"});
+    }
+    let newImageName = '';
+    const receivedVacation = JSON.parse(req.body.vacation);
+    let error = false;
+    if (req.files) {
+      const imageFile = req.files.image;
+      const randomName = uuid.v4();
+      const extension = imageFile.name.substr(imageFile.name.lastIndexOf('.'));
+      if (extension != ".jpg" && extension != ".png" && extension != ".gif" && extension != ".jpeg") {
+        return res.status(400).json({
+          errors: 'Cant accept this type of file...,can only accept png,gif,jpg and jpeg!'
+       });
+      }
+      // imageFile.mv('../client/src/assets/images/' + randomName + extension);
+      imageFile.mv('../client/public/assets/images/' + randomName + extension);
+       newImageName = randomName + extension
+    
+      fs.unlink("../client/public/assets/images/"+ receivedVacation.imageFileName , (err)=>{
+        if (err) {
+        error = true;
+        }
+      })   
+    
+    }
+    if (error) {
+      return res.status(400).json({errors:"failed to delete image"})
+
     }
 
+    if (!newImageName) {
+      newImageName = receivedVacation.vacationImageName;
+    } 
+    
+
+
     const vacation = new Vacation(
-      req.body.vacationId,
-      req.body.description,
-      req.body.destination,
-      req.body.imageFileName,
-      req.body.startVacationDate,
-      req.body.endVacationDate,
-      req.body.price
+      receivedVacation.vacationId,
+      receivedVacation.description, 
+      receivedVacation.destination,
+      newImageName,
+      receivedVacation.startVacationDate,
+      receivedVacation.endVacationDate,
+      receivedVacation.price
     );
+
+    
     const errors = vacation.validatePatch();
+  
     if (errors) {
-      return res.status(400).json({ errors: errors });
+      console.log(errors)
+      return res.status(400).json({ errors: errors[0] });
     }
+
+    
 
     const updatedVacation = await vacationLogic.updateVacation(vacation);
     if (!updatedVacation) {
       return res.status(400).json({ msg: "failed to update vacation!" });
     }
-    res.json(updatedVacation);
+    res.status(201).json({ msg: "succuss to Edit vacation!" });
+
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).send("server error");
   }
 });

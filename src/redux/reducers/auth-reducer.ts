@@ -1,6 +1,6 @@
 
 import { Auth } from '../types/auth/auth-type';
-import { AuthActionTypes, REGISTER_SUCCUSS, REGISTER_FAIL, USER_LOADED,AUTH_ERROR,LOGIN_SUCCUSS,LOGIN_FAIL,LOGOUT } from '../types/auth/auth-actions-types';
+import { AuthActionTypes, REGISTER_SUCCUSS, REGISTER_FAIL, USER_LOADED, AUTH_ERROR, LOGIN_SUCCUSS, LOGIN_FAIL, LOGOUT, REFRESH_PAGE, STOP_REFRESH_PAGE } from '../types/auth/auth-actions-types';
 import { UserModel } from '../../models/user-model';
 
 
@@ -8,7 +8,8 @@ const authReducerDefaultState: Auth = {
     token: localStorage.getItem("token"),
     isAuthenticated: null,
     loading: true,
-    user: new UserModel()
+    user: new UserModel(),
+    refreshPage: false
 };
 
 const authReducer = (state = authReducerDefaultState, action: AuthActionTypes): Auth => {
@@ -36,10 +37,21 @@ const authReducer = (state = authReducerDefaultState, action: AuthActionTypes): 
                 token: null,
                 isAuthenticated: false,
                 loading: false,
-                user:new UserModel()
+                user: new UserModel()
             }
-        default:
-          return state
+
+        case REFRESH_PAGE:
+            return {
+                ...state,
+                refreshPage: true
+            }
+        case STOP_REFRESH_PAGE:
+            return {
+                ...state,
+                refreshPage: false
+            }
+
+        default: return state
     }
 }
 

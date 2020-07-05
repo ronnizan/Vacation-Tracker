@@ -10,6 +10,16 @@ async function getAllVacations() {
   }
 
 }
+async function getOneVacation(vacationId) {
+  try {
+    const sql = `SELECT * from vacations where vacationId = ${vacationId}`
+    const vacation = await dal.executeAsync(sql);
+    return vacation;
+  } catch (error) {
+    return false
+  }
+
+}
 
 async function getVacationImageName(vacationId) {
   try {
@@ -31,11 +41,6 @@ async function getAllFollowedVacationsForLoggedUser(userId) {
    return false;
 
   }
-
-// const sql =   `SELECT vacations.*, count(followers.vacationId) as totalFollowers FROM vacations JOIN followers ON vacations.vacationId = followers.vacationId join users where followers.userId = ${userId} AND users.userId = ${userId} GROUP BY vacations.vacationId`
-// const sql =   `SELECT vacations.*, count(followers.vacationId) as totalFollowers FROM vacations JOIN followers ON vacations.vacationId = followers.vacationId join users where users.userId = ${userId} GROUP BY vacations.vacationId`
-  // const sql = `SELECT vacations.*, count(followers.vacationId) as totalFollowers FROM vacations LEFT JOIN followers ON vacations.vacationId = followers.vacationId where followers.userId = ${userId} GROUP BY vacations.vacationId`
-  // const sql = ` SELECT vacations.* FROM vacations JOIN followers ON vacations.vacationId = followers.vacationId WHERE followers.userId = ${userId}`;
 
 }
 
@@ -166,7 +171,6 @@ async function addFollowerToVacation(vacationId, userId) {
       default,
     ${userId},
     ${vacationId})`;
-    // followedVacationsIds.unshift({ user: req.user.id });
     const response = await dal.executeAsync(sqlAddFollow);
     if (response.affectedRows > 0) {
       return true;
@@ -211,6 +215,7 @@ async function removeFollowerToVacation(vacationId, userId) {
 
 module.exports = {
   getAllVacations,
+  getOneVacation,
   getVacationImageName,
   getAllFollowedVacationsForLoggedUser,
   addVacation,

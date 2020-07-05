@@ -8,6 +8,8 @@ export const AUTH_ERROR = 'AUTH_ERROR';
 export const LOGIN_FAIL = 'LOGIN_FAIL';
 export const LOGIN_SUCCUSS = 'LOGIN_SUCCUSS';
 export const LOGOUT = 'LOGOUT';
+export const REFRESH_PAGE = 'REFRESH_PAGE';
+export const STOP_REFRESH_PAGE = 'STOP_REFRESH_PAGE';
 
 export interface RegisterSuccussAction {
     type: typeof REGISTER_SUCCUSS;
@@ -41,8 +43,14 @@ export interface LoginFailAction {
 export interface LogoutAction {
     type: typeof LOGOUT;
 }
+export interface RefreshAction {
+    type: typeof REFRESH_PAGE;
+}
+export interface StopRefreshAction {
+    type: typeof STOP_REFRESH_PAGE;
+}
 
-export type AuthActionTypes = RegisterSuccussAction | RegisterFailAction | UserLoadedAction | AuthErrorAction | LoginSuccussAction | LoginFailAction | LogoutAction
+export type AuthActionTypes = RegisterSuccussAction | RegisterFailAction | UserLoadedAction | AuthErrorAction | LoginSuccussAction | LoginFailAction | LogoutAction | RefreshAction | StopRefreshAction
 
 
 

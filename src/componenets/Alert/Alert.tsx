@@ -12,54 +12,48 @@ const Alert: React.FC<Props> = (props: Props) => {
   const { alerts } = props;
 
   const alertToDisplay = alerts !== null &&
-    alerts.length > 0 && alerts.map((alert) => {
+    alerts.length > 0  && alerts.map((alert) => {
       const { id, alertType, msg } = alert;
       const notify = () => {
         if (alertType === "danger") {
-          const customId = "custom-id-danger";
-
           toast.error(msg, {
             position: "top-left",
             autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
             draggable: true,
             progress: undefined,
             className: 'foo-bar',
-            toastId: customId
-
           });
         } else {
-          const customId = "custom-id-success";
 
           toast.success(msg, {
             position: "top-left",
             autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
             draggable: true,
             progress: undefined,
             className: 'foo-bar',
-            toastId: customId
 
           });
         }
 
       }
       notify()
-      // const clearWaitingQueue = () => {
-      //   // Easy, right 😎
-      //   toast.clearWaitingQueue();
-      // }
+      const clearWaitingQueue = () => {
+        // Easy, right 😎
+        toast.clearWaitingQueue();
+      }
       return (
 
         <ToastContainer
           limit={1}
           key={id}
           position="top-center"
-          autoClose={5000}
+          // autoClose={5000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick

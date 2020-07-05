@@ -1,5 +1,5 @@
 import { popUpAlert } from './alert-actions';
-import { REGISTER_SUCCUSS, REGISTER_FAIL, USER_LOADED, LOGIN_SUCCUSS, LOGIN_FAIL, LOGOUT,AUTH_ERROR, AppActions } from '../types/auth/auth-actions-types';
+import { REGISTER_SUCCUSS, REGISTER_FAIL, USER_LOADED, LOGIN_SUCCUSS, LOGIN_FAIL, LOGOUT, AUTH_ERROR, AppActions, REFRESH_PAGE, STOP_REFRESH_PAGE } from '../types/auth/auth-actions-types';
 import { Dispatch } from 'redux';
 import { AppState } from '../store/store';
 import axios from 'axios';
@@ -26,7 +26,7 @@ export const loadUser = () => async (dispatch: Dispatch<AppActions>, getState: (
         setAuthToken(localStorage.token);
     }
     try {
-        const res = await axios.get(Config.serverUrl +"/api/auth/user");
+        const res = await axios.get(Config.serverUrl + "/api/auth/user");
         dispatch({
             type: USER_LOADED,
             payload: res.data
@@ -61,7 +61,7 @@ export const registerUser = ({ firstName, lastName, username, password }: {
                 payload: res.data.token
             });
             dispatch(loadUser());
-            dispatch(popUpAlert({msg:"You Have Been Successfully Registered",alertType:"success",timeout:5000}))
+            dispatch(popUpAlert({ msg: "You Have Been Successfully Registered", alertType: "success", timeout: 5000 }))
         } catch (error) {
             console.log(error)
 
@@ -94,7 +94,7 @@ export const loginUser = (username: string, password: string) => {
                 payload: res.data.token
             });
             dispatch(loadUser());
-            dispatch(popUpAlert({msg:"You Have Been Successfully Logged In",alertType:"success",timeout:8000}))
+            dispatch(popUpAlert({ msg: "You Have Been Successfully Logged In", alertType: "success", timeout: 8000 }))
 
         } catch (error) {
             console.log(error)
@@ -120,5 +120,19 @@ export const logoutUser = () => {
         });
         dispatch(popUpAlert({ timeout: 8000, msg: "You Have Been Successfully Logged Out", alertType: "danger" }));
 
+    };
+};
+export const refreshPage = () => {
+    return (dispatch: Dispatch<any>, getState: () => AppState) => {
+        dispatch({
+            type: REFRESH_PAGE
+        });
+    };
+};
+export const stopRefreshPage = () => {
+    return (dispatch: Dispatch<any>, getState: () => AppState) => {
+        dispatch({
+            type: STOP_REFRESH_PAGE
+        });
     };
 };

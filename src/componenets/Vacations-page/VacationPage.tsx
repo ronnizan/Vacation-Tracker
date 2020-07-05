@@ -57,7 +57,7 @@ class VacationPage extends Component<Props, VacationPageState> {
       const currentUserUnFollowedVacations = this.compareFollowedVacationsAndUnFoloowedVacations();
       this.setState({ currentUserUnFollowedVacations })
     } catch (error) {
-      console.log(error)
+      console.log(error.response.data.msg)
     }
   }
 
