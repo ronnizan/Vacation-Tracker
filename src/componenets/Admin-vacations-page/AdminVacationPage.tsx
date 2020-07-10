@@ -103,12 +103,12 @@ class AdminVacationPage extends Component<Props, AdminVacationPageState> {
                     <img className="card-img-top" src={window.location.origin + "/assets/images/" + vacation.imageFileName} alt="" />
                     <div className="card-body">
                       <h5 className="card-title"><strong>Destination:</strong> {vacation.destination}</h5>
-                      <p className="card-text"><strong>Description:</strong>  {vacation.description}</p>
+                      <p className="card-text card-text-description"><strong>Description:</strong>  {vacation.description}</p>
                       <p className="card-text"><strong>Start Of The Trip Date:</strong> {new Date(vacation.startVacationDate).toLocaleDateString()}</p>
                       <p className="card-text"><strong>End Of The Trip Date: </strong>{new Date(vacation.endVacationDate).toLocaleDateString()}</p>
 
                       <p className="card-text"><strong>Price: </strong> ${vacation.price}</p>
-                      <div className="followers-Wrapper"><span title="Total Followers">{vacation.totalFollowers}</span></div>
+                      {/* <div className="followers-Wrapper"><span title="Total Followers">{vacation.totalFollowers}</span></div> */}
                     </div>
                   </div>
                 </div>

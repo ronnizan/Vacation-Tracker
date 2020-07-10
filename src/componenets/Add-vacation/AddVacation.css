@@ -18,6 +18,7 @@ input[type=date] {
     border: none;
     padding: -20px;
     outline: none;
+    background: transparent;
 }
 
 input[type=date]:hover {

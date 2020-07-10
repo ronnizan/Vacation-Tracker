@@ -100,7 +100,7 @@ class AddVacation extends Component<Props, AddVacationState> {
             }, 2000);
 
         } catch (error) {
-            this.props.popUpAlert({ alertType: "danger", msg: error.response.data.errors, timeout: 5000 });
+            this.props.popUpAlert({ alertType: "danger", msg: error.response.data.msg, timeout: 5000 });
         }
 
     };

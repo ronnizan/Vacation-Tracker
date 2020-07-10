@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import io from 'socket.io-client'; //worked solution
 import "./VacationPage.css"
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -26,6 +27,8 @@ interface VacationPageState {
 
 class VacationPage extends Component<Props, VacationPageState> {
 
+
+  private socket = io.connect("http://localhost:3000"); // Server 
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -33,19 +36,26 @@ class VacationPage extends Component<Props, VacationPageState> {
       currentUserFollowedVacations: [],
       currentUserUnFollowedVacations: []
     }
+    if (this.socket === null) {
+      this.socket = io('http://localhost:3000');
+    }
+    this.socket.on("admin-change", (vacations: VacationModel[]) => {
+      this.setState({ allVacations: vacations });
+    });
+
 
   }
 
   componentDidMount = async () => {
     try {
+
       this.props.loadUser();
       if (localStorage.token) {
         setAuthToken(localStorage.token);
       }
       const res = await axios.get<VacationModel[]>(Config.serverUrl + "/api/vacations");
-      const allVacations = res.data;
+      let allVacations = res.data;
       this.setState({ allVacations })
-      console.log(allVacations)
       const res2 = await axios.get<VacationModel[]>(Config.serverUrl + "/api/vacations/my-vacations");
       const currentUserFollowedVacations = res2.data;
       currentUserFollowedVacations.forEach(vacation => {
@@ -58,6 +68,24 @@ class VacationPage extends Component<Props, VacationPageState> {
       this.setState({ currentUserUnFollowedVacations })
     } catch (error) {
       console.log(error.response.data.msg)
+    }
+  }
+  async componentDidUpdate(prevProps: Props, prevState: VacationPageState) {
+    if (prevState.allVacations !== this.state.allVacations) {
+      try {
+        const res2 = await axios.get<VacationModel[]>(Config.serverUrl + "/api/vacations/my-vacations");
+        const currentUserFollowedVacations = res2.data;
+        currentUserFollowedVacations.forEach(vacation => {
+          return this.state.allVacations.forEach(vacation2 => {
+            return vacation.vacationId === vacation2.vacationId ? vacation.totalFollowers = vacation2.totalFollowers : vacation.totalFollowers = vacation.totalFollowers
+          })
+        })
+        this.setState({ currentUserFollowedVacations })
+        const currentUserUnFollowedVacations = this.compareFollowedVacationsAndUnFoloowedVacations();
+        this.setState({ currentUserUnFollowedVacations })
+      } catch (error) {
+        console.log(error.response.data.msg)
+      }
     }
   }
 
@@ -94,7 +122,6 @@ class VacationPage extends Component<Props, VacationPageState> {
       this.props.popUpAlert({ alertType: "danger", msg: "Failed to Remove follow to a vacation", timeout: 5000 })
     }
 
-    {/* <img src={require("../../assets/images/" + unFollowedVacation.imageFileName)} className="card-img-top" alt="..." /> */ }
   }
 
 
@@ -107,25 +134,26 @@ class VacationPage extends Component<Props, VacationPageState> {
     return (
       this.state.allVacations.length > 0 &&
       <div className="container">
+
         <br /><br />
         <div className="row">
           {this.state.currentUserFollowedVacations.length > 0 &&
             this.state.currentUserFollowedVacations.map((followedVacation, index) => {
               return (
                 <div key={followedVacation.vacationId} className="col-sm-12 col-md-6 col-lg-4">
-                  <div className="card">
+                  <div className="card ">
                     <div onClick={() => {
                       this.removeFollowerFromVacation(followedVacation.vacationId)
-                    }} title="Unfollow Vacation" className="follow-Wrapper-followed"><i className="fab fa-facebook-f" aria-hidden="true"></i></div>
-                    <img src={window.location.origin + "/assets/images/" + followedVacation.imageFileName} className="card-img-top" alt="" /> 
+                    }} title="Unfollow Vacation" className="follow-Wrapper-followed"><i className="fas fa-minus-circle"></i></div>
+                    <img src={window.location.origin + "/assets/images/" + followedVacation.imageFileName} className="card-img-top" alt="" />
                     <div className="card-body">
                       <h5 className="card-title"><strong>Destination:</strong> {followedVacation.destination}</h5>
-                      <p className="card-text"><strong>Description:</strong>  {followedVacation.description}</p>
+                      <p className="card-text card-text-description "><strong>Description:</strong>  {followedVacation.description}</p>
                       <p className="card-text"><strong>Start Of The Trip Date:</strong> {new Date(followedVacation.startVacationDate).toLocaleDateString()}</p>
                       <p className="card-text"><strong>End Of The Trip Date: </strong>{new Date(followedVacation.endVacationDate).toLocaleDateString()}</p>
 
                       <p className="card-text"><strong>Price: </strong> ${followedVacation.price}</p>
-                      <div className="followers-Wrapper"><span title="Total Followers">{followedVacation.totalFollowers}</span></div>
+                      <div className="followers-Wrapper"><span title="Total Followers">{followedVacation.totalFollowers}followers</span></div>
                     </div>
                   </div>
                 </div>
@@ -140,10 +168,10 @@ class VacationPage extends Component<Props, VacationPageState> {
                   <div className="card">
                     <div onClick={() => { this.addFollowerToVacation(unFollowedVacation.vacationId) }} title="Follow Vacation" className="follow-Wrapper-unfollowed"><i className="fab fa-facebook-f" aria-hidden="true"></i></div>
 
-                    <img className="card-img-top" src={window.location.origin + "/assets/images/" + unFollowedVacation.imageFileName} alt="" /> 
+                    <img className="card-img-top" src={window.location.origin + "/assets/images/" + unFollowedVacation.imageFileName} alt="" />
                     <div className="card-body">
                       <h5 className="card-title"><strong>Destination:</strong> {unFollowedVacation.destination}</h5>
-                      <p className="card-text"><strong>Description: </strong>  {unFollowedVacation.description}</p>
+                      <p className="card-text card-text-description"><strong>Description: </strong>  {unFollowedVacation.description}</p>
                       <p className="card-text"><strong>Start Of The Trip Date: </strong> {new Date(unFollowedVacation.startVacationDate).toLocaleDateString()}</p>
                       <p className="card-text"><strong>End Of The Trip Date: </strong>{new Date(unFollowedVacation.endVacationDate).toLocaleDateString()}</p>
 

@@ -17,6 +17,7 @@ import AdminRoute from '../Private-routing/AdminRoute';
 import AdminVacationPage from '../Admin-vacations-page/AdminVacationPage';
 import AddVacation from '../Add-vacation/AddVacation';
 import adminVacationsTracker from '../Admin-vacations-tracker/adminVacationsTracker';
+import PageNotFound from '../Page-not-found/PageNotFound';
 if (localStorage.token) {
     setAuthToken(localStorage.token);
 }
@@ -48,6 +49,8 @@ class Layout extends Component {
                         <AdminRoute path="/add-vacation" component={AddVacation} exact></AdminRoute>
                         <AdminRoute path="/admin-vacations" component={AdminVacationPage} exact></AdminRoute>
                         <AdminRoute path="/admin-vacations-tracker" component={adminVacationsTracker} exact></AdminRoute>
+                        
+                        <Route component={PageNotFound} />
                     </Switch>
                     {/* </section> */}
                 </BrowserRouter>

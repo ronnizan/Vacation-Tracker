@@ -15,6 +15,8 @@ type Props = LinkDispatchProps & LinkStateProps;
 
 
 class Navbar extends React.Component<Props> {
+
+
     constructor(props: Props) {
         super(props);
 
@@ -62,7 +64,7 @@ class Navbar extends React.Component<Props> {
             (<ul className="navbar-nav mr-auto">
                 <li className="nav-item">
                     <Link to="/" className="nav-link">Home
-             <span className="sr-only">(current)</span>
+             {/* <span className="sr-only">(current)</span> */}
                     </Link>
                 </li>
                 <li className="nav-item">
@@ -79,7 +81,7 @@ class Navbar extends React.Component<Props> {
 
         return (
 
-            <div>
+            <div >
                 <nav className="navbar navbar-expand-lg navbar-dark bg-dark static-top ">
                     <div className="container">
                         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
