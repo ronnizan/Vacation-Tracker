@@ -12,7 +12,7 @@ import { Alert } from '../../redux/types/alert/alert-type';
 import { connect } from 'react-redux';
 import { Config } from '../../config';
 import { VacationModel } from '../../models/vacation-model';
-import { refreshPage } from '../../redux/actions/auth-actions';
+import { loadUser, refreshPage } from '../../redux/actions/auth-actions';
 
 
 
@@ -54,6 +54,7 @@ class Modal extends Component<Props, ModalState> {
 
     componentDidMount = async () => {
         try {
+            this.props.loadUser();
 
             if (localStorage.token) {
                 setAuthToken(localStorage.token);
@@ -121,12 +122,9 @@ class Modal extends Component<Props, ModalState> {
                 },
             };
             const res = await axios.patch(Config.serverUrl + "/api/vacations/update", formData, config);
-            // console.log(res);
 
             this.props.popUpAlert({ alertType: "success", msg: res.data.msg, timeout: 5000 })
-            // setTimeout(() => {
             this.props.refreshPage();
-            // }, 1000);
 
         } catch (error) {
             this.props.popUpAlert({ alertType: "danger", msg: error.response.data.msg, timeout: 5000 });
@@ -219,14 +217,16 @@ class Modal extends Component<Props, ModalState> {
 }
 interface LinkDispatchProps {
     popUpAlert?: (alert: Alert) => void;
-    refreshPage?: () => void
+    refreshPage?: () => void;
+    loadUser?: () => void;
 
 }
 const mapDispatchToProps = (
     dispatch: ThunkDispatch<any, any, AppActions>
 ): LinkDispatchProps => ({
     popUpAlert: bindActionCreators(popUpAlert, dispatch),
-    refreshPage: bindActionCreators(refreshPage, dispatch)
+    refreshPage: bindActionCreators(refreshPage, dispatch),
+    loadUser: bindActionCreators(loadUser, dispatch)
 });
 export default connect(
     null,

@@ -27,8 +27,6 @@ class AdminVacationsPage extends Component<Props, AdminVacationsPageState> {
 
   async componentDidMount() {
     this.props.loadUser();
-    // labels: dailyData.map(({date})=> date),
-    // data:dailyData.map(({deaths})=>deaths),
     const res = await axios.get<{ destination: string, followers: number, vacationId: number }[]>(Config.serverUrl + "/api/vacations/all-vacations-followers");
     this.setState({ vacations: res.data });
   }
@@ -36,10 +34,10 @@ class AdminVacationsPage extends Component<Props, AdminVacationsPageState> {
   render() {
     const data = {
 
-      // labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
       labels: this.state.vacations.map(v => v.destination),
       datasets: [
         {
+          barThickness: 43,
           label: 'Followers',
           backgroundColor: 'blue',
           borderColor: 'blue',
@@ -53,53 +51,53 @@ class AdminVacationsPage extends Component<Props, AdminVacationsPageState> {
     };
     return (
 
-      <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.866)', marginTop: '3rem' }} className="container chart-container">
+      <div  className="container chart-container">
+        <div className="row">
+          <div className="col-sm-9 col-md-7 col-lg-5 mx-auto"></div>
+          <Bar
 
-        <Bar
+            data={data}
+            width={100}
+            height={450}
+            options={{
 
-          data={data}
-          width={100}
-          height={450}
-          options={{
-
-            legend: {
-              labels: {
-                fontColor: "black",
-                fontSize: 18
-              }
-            },
-            scales: {
-              yAxes: [{
-                ticks: {
+              legend: {
+                labels: {
                   fontColor: "black",
-                  fontSize: 18,
-                  stepSize: 1,
-                  beginAtZero: true
+                  fontSize: 18
                 }
-              }],
-              xAxes: [{
-                barThickness : 73,
-                
-                ticks: {
-                  fontColor: "black",
-                  fontSize: 18,
-                  stepSize: 1,
-                  beginAtZero: true
-                }
-              }]
-            },
+              },
+              scales: {
+                yAxes: [{
+                  ticks: {
+                    fontColor: "black",
+                    fontSize: 18,
+                    stepSize: 1,
+                    beginAtZero: true
+                  }
+                }],
+                xAxes: [{
+                  ticks: {
+                    fontColor: "black",
+                    fontSize: 18,
+                    stepSize: 1,
+                    beginAtZero: true
+                  }
+                }]
+              },
 
-            title: {
-              display: true,
-              text: 'Followers-Tracker',
-              fontSize: '30',
-              fontColor: 'black'
-            },
-            maintainAspectRatio: false
-          }}
-        />
-
+              title: {
+                display: true,
+                text: 'Followers-Tracker',
+                fontSize: '30',
+                fontColor: 'black'
+              },
+              maintainAspectRatio: false
+            }}
+          />
+        </div>
       </div>
+
     )
   }
 }

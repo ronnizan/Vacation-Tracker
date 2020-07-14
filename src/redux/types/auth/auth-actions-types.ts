@@ -1,5 +1,3 @@
-import { Auth } from './auth-type';
-import { UserModel as User } from '../../../models/user-model';
 import { AlertActionTypes } from '../alert/alert-actions-types';
 export const REGISTER_SUCCUSS = 'REGISTER_SUCCUSS';
 export const REGISTER_FAIL = 'REGISTER_FAIL';
@@ -18,11 +16,7 @@ export interface RegisterSuccussAction {
 export interface UserLoadedAction {
     type: typeof USER_LOADED;
     payload: object;
-    // userId(pin):29
-    // firstName(pin):"111111"
-    // lastName(pin):"22asdasd22"
-    // username(pin):"231112456"
-    // isAdmin(pin):0
+
 }
 
 

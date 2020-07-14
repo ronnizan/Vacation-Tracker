@@ -43,17 +43,12 @@ const Alert: React.FC<Props> = (props: Props) => {
 
       }
       notify()
-      const clearWaitingQueue = () => {
-        // Easy, right 😎
-        toast.clearWaitingQueue();
-      }
       return (
 
         <ToastContainer
           limit={1}
           key={id}
           position="top-center"
-          // autoClose={5000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick

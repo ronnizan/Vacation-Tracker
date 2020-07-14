@@ -7,20 +7,6 @@ import setAuthToken from '../../utills/setAuthToken';
 import { Config } from '../../config';
 
 
-// export const userLoad = (user: User): AppActions => ({
-//     type: USER_LOADED,
-//     payload: user
-// });
-// export const login = (user: User): AppActions => ({
-//     type: LOGIN_SUCCUSS,
-//     payload: user
-// });
-// export const register = (token: { token: string }): AppActions => ({
-//     type: REGISTER_SUCCUSS,
-//     payload: token.token
-// });
-
-
 export const loadUser = () => async (dispatch: Dispatch<AppActions>, getState: () => AppState) => {
     if (localStorage.token) {
         setAuthToken(localStorage.token);
@@ -32,7 +18,7 @@ export const loadUser = () => async (dispatch: Dispatch<AppActions>, getState: (
             payload: res.data
         });
     } catch (error) {
-        console.log("in load")
+
         dispatch({
             type: AUTH_ERROR
         });
@@ -63,7 +49,7 @@ export const registerUser = ({ firstName, lastName, username, password }: {
             dispatch(loadUser());
             dispatch(popUpAlert({ msg: "You Have Been Successfully Registered", alertType: "success", timeout: 5000 }))
         } catch (error) {
-            console.log(error)
+
 
             const errors = error.response.data.errors;
             if (errors) {
@@ -97,8 +83,6 @@ export const loginUser = (username: string, password: string) => {
             dispatch(popUpAlert({ msg: "You Have Been Successfully Logged In", alertType: "success", timeout: 8000 }))
 
         } catch (error) {
-            console.log(error)
-
             const errors = error.response.data.errors;
             if (errors) {
                 errors.forEach((err: { msg: string; }) => dispatch(popUpAlert({ timeout: 8000, msg: err.msg, alertType: "danger" })));

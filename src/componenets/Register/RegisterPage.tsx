@@ -40,7 +40,6 @@ class RegisterPage extends Component<Props, RegisterPageState> {
     private onSubmit = (e: FormEvent) => {
         e.preventDefault();
         const { username, password, firstName, lastName, password2 } = this.state
-        // console.log(this.state)
         if (password !== password2) {
             return this.props.popUpAlert({ msg: 'passwords do not match', alertType: 'danger', timeout: 5000 });
         } else {
@@ -54,9 +53,9 @@ class RegisterPage extends Component<Props, RegisterPageState> {
             return <Redirect to="/vacations"></Redirect>
         }
         return (
-            <div className="container-fluid">
+            <div className="container">
                 <div className="row">
-                    <div className="col-sm-9 col-md-7 col-lg-4 mx-auto">
+                    <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
                         <div className="card card-signin my-5">
                             <div className="card-body">
                                 <h5 className="card-title text-center">Register</h5>

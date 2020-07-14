@@ -6,7 +6,7 @@ import Alert from '../Alert/Alert';
 import store from '../../redux/store/store';
 import setAuthToken from '../../utills/setAuthToken';
 import { loadUser } from '../../redux/actions/auth-actions';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import LoginPage from '../Login/LoginPage';
 import VacationPage from '../Vacations-page/VacationPage';
 import LoggedUser from '../Private-routing/LoggedUser';
@@ -28,31 +28,23 @@ class Layout extends Component {
             store.dispatch(loadUser())
         }
     }
-    componentDidUpdate() {
-        if (localStorage.token) {
-
-            store.dispatch(loadUser())
-        }
-    }
     render() {
         return (
             <Provider store={store}>
                 <BrowserRouter>
                     <Navbar></Navbar>
                     <Alert />
-                    {/* <section className="container-fluid"> */}
                     <Switch>
-                        <Route path="/" component={LandingPage} exact></Route>
+                        <Route path="/landing-page" component={LandingPage} exact></Route>
                         <Route path="/login" component={LoginPage} exact></Route>
                         <Route path="/register" component={Register} exact></Route>
                         <LoggedUser path="/vacations" component={VacationPage} exact></LoggedUser>
                         <AdminRoute path="/add-vacation" component={AddVacation} exact></AdminRoute>
                         <AdminRoute path="/admin-vacations" component={AdminVacationPage} exact></AdminRoute>
                         <AdminRoute path="/admin-vacations-tracker" component={adminVacationsTracker} exact></AdminRoute>
-                        
+                        <Redirect from="/" to="/landing-page" exact />
                         <Route component={PageNotFound} />
                     </Switch>
-                    {/* </section> */}
                 </BrowserRouter>
             </Provider>
         );

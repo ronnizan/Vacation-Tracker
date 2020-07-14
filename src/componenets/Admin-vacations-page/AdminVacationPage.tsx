@@ -68,9 +68,8 @@ class AdminVacationPage extends Component<Props, AdminVacationPageState> {
 
       const newVac = this.state.allVacations.filter(vac => vac.vacationId !== vacationId);
       this.setState({ allVacations: newVac })
-      const res = await axios.delete(Config.serverUrl + "/api/vacations/delete/" + vacationId);
+      await axios.delete(Config.serverUrl + "/api/vacations/delete/" + vacationId);
       this.props.popUpAlert({ alertType: "success", msg: "Removed Vacation", timeout: 5000 })
-      // this.componentDidMount()
     } catch (error) {
       this.props.popUpAlert({ alertType: "danger", msg: "Failed to Remove Vacation", timeout: 5000 })
     }
@@ -95,7 +94,6 @@ class AdminVacationPage extends Component<Props, AdminVacationPageState> {
                   <div className="card">
                     <div onClick={() => {
                       this.setState({ vacationIdToEdit: vacation.vacationId, isModalOpen: true })
-                      // this.setState({ isModalOpen: true });
                     }} title="Edit Vacation" className="edit-Wrapper"><i className="far fa-edit"></i></div>
                     <div onClick={() => {
                       this.deleteVacation(vacation.vacationId)
@@ -108,7 +106,6 @@ class AdminVacationPage extends Component<Props, AdminVacationPageState> {
                       <p className="card-text"><strong>End Of The Trip Date: </strong>{new Date(vacation.endVacationDate).toLocaleDateString()}</p>
 
                       <p className="card-text"><strong>Price: </strong> ${vacation.price}</p>
-                      {/* <div className="followers-Wrapper"><span title="Total Followers">{vacation.totalFollowers}</span></div> */}
                     </div>
                   </div>
                 </div>
@@ -118,7 +115,6 @@ class AdminVacationPage extends Component<Props, AdminVacationPageState> {
           }
 
         </div>
-        {/* <button onClick={() => { this.setState({ isModalOpen: true }) }}>asd</button> */}
         {this.state.vacationIdToEdit !== 0 && this.state.isModalOpen &&
           <Modal showModal={this.state.isModalOpen} closeModal={() => { this.setState({ isModalOpen: false }) }} vacationId={this.state.vacationIdToEdit}  ></Modal>
         }

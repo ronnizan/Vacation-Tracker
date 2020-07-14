@@ -1,7 +1,7 @@
 
 import React from 'react';
 import "./Navbar.css"
-import { Link } from 'react-router-dom';
+import {  NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { logoutUser } from '../../redux/actions/auth-actions';
@@ -11,16 +11,12 @@ import { AppState } from '../../redux/store/store';
 import { Auth } from '../../redux/types/auth/auth-type';
 
 
+
 type Props = LinkDispatchProps & LinkStateProps;
 
 
 class Navbar extends React.Component<Props> {
 
-
-    constructor(props: Props) {
-        super(props);
-
-    }
 
     render() {
         const { logoutUser, auth } = this.props;
@@ -31,22 +27,17 @@ class Navbar extends React.Component<Props> {
                     <button className="nav-link button-navbar-username">Hello {auth.user.firstName}
                     </button>
                 </li>
-                {/* <li className="nav-item">
-                    <Link to="/" className="nav-link">Home
-                     <span className="sr-only">(current)</span>
-                    </Link>
-                </li> */}
                 <li className="nav-item">
-                    {auth.isAuthenticated && auth.user.isAdmin === 1 ? <Link to="/admin-vacations" className="nav-link">Vacations</Link> : <Link to="/vacations" className="nav-link">Vacations</Link>}
+                    {auth.isAuthenticated && auth.user.isAdmin === 1 ? <NavLink to="/admin-vacations" className="nav-link">Vacations</NavLink> : <NavLink to="/vacations" className="nav-link">Vacations</NavLink>}
                 </li>
                 {
                     auth.isAuthenticated && auth.user.isAdmin === 1 && (
                         <>
                             <li className="nav-item">
-                                <Link to="/add-vacation" className="nav-link">Add Vacation</Link>
+                                <NavLink to="/add-vacation" className="nav-link">Add Vacation</NavLink>
                             </li>
                             <li className="nav-item">
-                                <Link to="/admin-vacations-tracker" className="nav-link">Vacation Tracker</Link>
+                                <NavLink to="/admin-vacations-tracker" className="nav-link">Vacation Tracker</NavLink>
                             </li>
                         </>
                     )
@@ -63,18 +54,17 @@ class Navbar extends React.Component<Props> {
         const guestLinks =
             (<ul className="navbar-nav mr-auto">
                 <li className="nav-item">
-                    <Link to="/" className="nav-link">Home
-             {/* <span className="sr-only">(current)</span> */}
-                    </Link>
+                    <NavLink to="/landing-page" className="nav-link">Home
+                    </NavLink>
                 </li>
                 <li className="nav-item">
-                    <Link to="/login" className="nav-link">Sign In</Link>
+                    <NavLink to="/login" className="nav-link">Sign In</NavLink>
                 </li>
                 <li className="nav-item">
-                    <Link to="/register" className="nav-link">Register</Link>
+                    <NavLink to="/register" className="nav-link">Register</NavLink>
                 </li>
                 <li className="nav-item">
-                    <Link to="/vacations" className="nav-link">Vacations</Link>
+                    <NavLink to="/vacations" className="nav-link">Vacations</NavLink>
                 </li>
             </ul>
             )

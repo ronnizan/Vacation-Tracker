@@ -41,7 +41,6 @@ class AddVacation extends Component<Props, AddVacationState> {
 
     componentDidMount = async () => {
         try {
-            // this.props.loadUser();
             if (localStorage.token) {
                 setAuthToken(localStorage.token);
             }
@@ -92,7 +91,7 @@ class AddVacation extends Component<Props, AddVacationState> {
                     "Content-Type": "application/json",
                 },
             };
-            const res = await axios.post(Config.serverUrl + "/api/vacations", formData, config)
+            await axios.post(Config.serverUrl + "/api/vacations", formData, config)
 
             this.props.popUpAlert({ alertType: "success", msg: "successfully added vacation", timeout: 5000 })
             setTimeout(() => {
@@ -112,9 +111,9 @@ class AddVacation extends Component<Props, AddVacationState> {
 
         return (
 
-            <div className="container-fluid">
+            <div className="container">
                 <div className="row">
-                    <div className="col-sm-9 col-md-7 col-lg-4 mx-auto">
+                    <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
                         <div className="card card-signin my-5">
                             <div className="card-body">
                                 <h5 className="card-title text-center">Add Vacation</h5>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import io from 'socket.io-client'; //worked solution
+import io from 'socket.io-client'; 
 import "./VacationPage.css"
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -41,6 +41,9 @@ class VacationPage extends Component<Props, VacationPageState> {
     }
     this.socket.on("admin-change", (vacations: VacationModel[]) => {
       this.setState({ allVacations: vacations });
+      if (this.props.auth.user.isAdmin !== 1) {
+        this.props.popUpAlert({ alertType: "success", msg: "Admin has changed one of the vacation details!", timeout: 5000 })
+      }
     });
 
 
@@ -60,14 +63,18 @@ class VacationPage extends Component<Props, VacationPageState> {
       const currentUserFollowedVacations = res2.data;
       currentUserFollowedVacations.forEach(vacation => {
         return allVacations.forEach(vacation2 => {
-          return vacation.vacationId === vacation2.vacationId ? vacation.totalFollowers = vacation2.totalFollowers : vacation.totalFollowers = vacation.totalFollowers
+          return vacation.vacationId === vacation2.vacationId ? vacation.totalFollowers = vacation2.totalFollowers : vacation.totalFollowers
         })
       })
       this.setState({ currentUserFollowedVacations })
       const currentUserUnFollowedVacations = this.compareFollowedVacationsAndUnFoloowedVacations();
       this.setState({ currentUserUnFollowedVacations })
     } catch (error) {
-      console.log(error.response.data.msg)
+      if (error.response.data.msg === "no token, auth denied") {
+        this.props.popUpAlert({ alertType: "danger", msg: "You Must Sign In Before Entering Vacations Page", timeout: 5000 })
+
+
+      }
     }
   }
   async componentDidUpdate(prevProps: Props, prevState: VacationPageState) {
@@ -77,12 +84,13 @@ class VacationPage extends Component<Props, VacationPageState> {
         const currentUserFollowedVacations = res2.data;
         currentUserFollowedVacations.forEach(vacation => {
           return this.state.allVacations.forEach(vacation2 => {
-            return vacation.vacationId === vacation2.vacationId ? vacation.totalFollowers = vacation2.totalFollowers : vacation.totalFollowers = vacation.totalFollowers
+            return vacation.vacationId === vacation2.vacationId ? vacation.totalFollowers = vacation2.totalFollowers : vacation.totalFollowers
           })
         })
         this.setState({ currentUserFollowedVacations })
         const currentUserUnFollowedVacations = this.compareFollowedVacationsAndUnFoloowedVacations();
         this.setState({ currentUserUnFollowedVacations })
+
       } catch (error) {
         console.log(error.response.data.msg)
       }
@@ -106,7 +114,7 @@ class VacationPage extends Component<Props, VacationPageState> {
 
   private addFollowerToVacation = async (vacationId: number) => {
     try {
-      const res = await axios.post(Config.serverUrl + "/api/vacations/add-vacation-follower", { vacationId: +vacationId });
+      await axios.post(Config.serverUrl + "/api/vacations/add-vacation-follower", { vacationId: +vacationId });
       this.props.popUpAlert({ alertType: "success", msg: "Added Follow", timeout: 5000 })
       this.componentDidMount()
     } catch (error) {
@@ -115,7 +123,7 @@ class VacationPage extends Component<Props, VacationPageState> {
   }
   private removeFollowerFromVacation = async (vacationId: number) => {
     try {
-      const res = await axios.delete(Config.serverUrl + "/api/vacations/remove-vacation-follower/" + vacationId);
+      await axios.delete(Config.serverUrl + "/api/vacations/remove-vacation-follower/" + vacationId);
       this.props.popUpAlert({ alertType: "success", msg: "Removed Follow", timeout: 5000 })
       this.componentDidMount()
     } catch (error) {
